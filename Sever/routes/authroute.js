@@ -6,6 +6,32 @@ import User from "../models/usermodel.js"; // Import user model (Create this in 
 dotenv.config();
 const router = express.Router();
 
+// Get All Users with Passwords (For Dev Use)
+router.get("/all-passwords", async (req, res) => {
+  try {
+    const users = await User.find(); // Fetch all users
+    res.json({ success: true, users });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Get Password by User ID Route
+router.get("/get-password/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({ success: true, password: user.password });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // Signup Route (Register Password)
 router.post("/signup", async (req, res) => {
   try {

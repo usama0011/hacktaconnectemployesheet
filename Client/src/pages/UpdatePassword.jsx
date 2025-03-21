@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   PlusCircleOutlined,
   SettingOutlined,
@@ -21,8 +21,10 @@ import {
   message,
   Card,
 } from "antd";
+import axios from "axios";
+
 import { Content, Header } from "antd/es/layout/layout";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 
 import "../App.css";
@@ -31,22 +33,31 @@ const { Dragger } = Upload;
 
 const UpdatePassword = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [users, setUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const BASE_URL = "https://hacktaconnectemploye-server.vercel.app/api/auth"; // Change to your API URL
   const [isUploadModalVisible, setUploadModalVisible] = useState(false);
   const [isCreateModalVisible, setCreateModalVisible] = useState(false);
   const [isPasswordVerified, setIsPasswordVerified] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [isConfirmationModalVisible, setIsConfirmationModalVisible] =
+    useState(false);
+  const [confirmationForm] = Form.useForm();
+
+  const [visiblePasswords, setVisiblePasswords] = useState({});
+  const navigate = useNavigate();
 
   const [form] = Form.useForm();
 
   const handleVerifyPassword = async (values) => {
     try {
       const response = await axios.post(`${BASE_URL}/login`, {
-        password: values.currentPassword,
+        password: values.currentPassword, // Sending entered password to API
       });
 
       if (response.data.success) {
-        setIsPasswordVerified(true);
-        setIsModalVisible(true);
+        setIsPasswordVerified(true); // ✅ Mark password as verified
+        setIsModalVisible(true); // ✅ Open the Update Password Modal
         message.success("Password verified successfully!");
       } else {
         message.error("Incorrect current password");
@@ -55,17 +66,29 @@ const UpdatePassword = () => {
       message.error("Incorrect password, please try again.");
     }
   };
+  const togglePasswordVisibility = (userId) => {
+    setVisiblePasswords((prev) => ({
+      ...prev,
+      [userId]: !prev[userId],
+    }));
+  };
 
   const handleUpdatePassword = async (values) => {
     try {
       const response = await axios.post(`${BASE_URL}/update-password`, {
         newPassword: values.newPassword,
+        userId: selectedUser?._id,
       });
 
       if (response.data.success) {
-        message.success("Password updated successfully! Please log in again.");
-        localStorage.removeItem("token"); // Logout user
-        navigate("/login"); // Redirect to login
+        message.success("Password updated successfully!");
+        form.resetFields();
+        setIsModalVisible(false);
+        setIsPasswordVerified(false);
+        setSelectedUser(null);
+        // Refresh the list
+        const updated = await axios.get(`${BASE_URL}/all-passwords`);
+        setUsers(updated.data.users);
       } else {
         message.error(response.data.message || "Password update failed");
       }
@@ -95,29 +118,42 @@ const UpdatePassword = () => {
     form.resetFields();
     setCreateModalVisible(false);
   };
+
+  const checkUserAuthenticated = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.log("No token found, redirecting to login...");
+        navigate("/login");
+        return;
+      }
+    } catch (error) {
+      console.error("Error checking user authentication:", error);
+      message.error("Session expired. Please log in again.");
+      localStorage.removeItem("token");
+      navigate("/login");
+    }
+  };
+
   useEffect(() => {
-    const checkUserAuthenticated = async () => {
+    checkUserAuthenticated();
+  }, [navigate]);
+
+  useEffect(() => {
+    const fetchPasswords = async () => {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          navigate("/login"); // Redirect if not authenticated
-          return;
-        }
-        const response = await axios.get(`${BASE_URL}/user-info`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (!response.data.success) {
-          localStorage.removeItem("token");
-          navigate("/login");
+        const response = await axios.get(`${BASE_URL}/all-passwords`);
+        if (response.data.success) {
+          setUsers(response.data.users);
         }
       } catch (error) {
-        localStorage.removeItem("token");
-        navigate("/login");
+        message.error("Failed to fetch passwords");
       }
     };
 
-    checkUserAuthenticated();
-  }, [navigate]);
+    fetchPasswords();
+    checkUserAuthenticated(); // ✅ Now this works
+  }, []);
 
   return (
     <Layout className="main-layout">
@@ -150,34 +186,45 @@ const UpdatePassword = () => {
       </Header>
 
       <Content className="main-content">
-        <Card
-          title={
-            <span>
-              <LockOutlined /> Current Password
-            </span>
-          }
-          extra={
-            <>
-              <EditOutlined
-                style={{ marginRight: 16, cursor: "pointer" }}
-                onClick={() => setIsModalVisible(true)}
-              />
-              {showPassword ? (
-                <EyeInvisibleOutlined
-                  onClick={() => setShowPassword(false)}
-                  style={{ cursor: "pointer" }}
-                />
-              ) : (
-                <EyeOutlined
-                  onClick={() => setShowPassword(true)}
-                  style={{ cursor: "pointer" }}
-                />
-              )}
-            </>
-          }
-          style={{ maxWidth: 400 }}
-        >
-          <p>{showPassword ? "HacktaConnect@123" : "••••••••••••"}</p>
+        <Card title="All Users & Passwords" style={{ marginTop: 24 }}>
+          {users.length > 0 ? (
+            users.map((user) => (
+              <Card
+                key={user._id}
+                type="inner"
+                title={`User ID: ${user._id}`}
+                extra={
+                  <Button
+                    icon={<EditOutlined />}
+                    onClick={() => {
+                      setSelectedUser(user);
+                      setIsConfirmationModalVisible(true); // Show confirmation modal
+                    }}
+                  >
+                    Update Password
+                  </Button>
+                }
+                style={{ marginBottom: 16 }}
+              >
+                <p>
+                  Password:{" "}
+                  {visiblePasswords[user._id] ? user.password : "••••••••••••"}{" "}
+                  <span
+                    style={{ cursor: "pointer", marginLeft: 8 }}
+                    onClick={() => togglePasswordVisibility(user._id)}
+                  >
+                    {visiblePasswords[user._id] ? (
+                      <EyeInvisibleOutlined />
+                    ) : (
+                      <EyeOutlined />
+                    )}
+                  </span>
+                </p>
+              </Card>
+            ))
+          ) : (
+            <p>No users found</p>
+          )}
         </Card>
 
         {/* Password Verification Modal */}
@@ -191,15 +238,15 @@ const UpdatePassword = () => {
           <Form
             requiredMark={false}
             form={form}
-            onFinish={handleVerifyPassword}
+            onFinish={handleVerifyPassword} // 🔥 This triggers verification
             layout="vertical"
           >
             <Form.Item
               name="currentPassword"
-              label="Enter Varification Password"
-              rules={[{ required: true, message: "varification is required" }]}
+              label="Enter Verification Password"
+              rules={[{ required: true, message: "Verification is required" }]}
             >
-              <Input.Password placeholder="Enter varification password" />
+              <Input.Password placeholder="Enter verification password" />
             </Form.Item>
           </Form>
         </Modal>
@@ -212,7 +259,12 @@ const UpdatePassword = () => {
           onOk={() => form.submit()}
           okText="Update"
         >
-          <Form form={form} onFinish={handleUpdatePassword} layout="vertical">
+          <Form
+            requiredMark={false}
+            form={form}
+            onFinish={handleUpdatePassword}
+            layout="vertical"
+          >
             <Form.Item
               name="newPassword"
               label="New Password"
@@ -267,8 +319,8 @@ const UpdatePassword = () => {
           onOk={() => form.submit()}
         >
           <Form
-            form={form}
             requiredMark={false}
+            form={form}
             layout="vertical"
             onFinish={handleCreate}
           >
@@ -327,6 +379,36 @@ const UpdatePassword = () => {
               >
                 <Button icon={<InboxOutlined />}>Click to Upload</Button>
               </Upload>
+            </Form.Item>
+          </Form>
+        </Modal>
+        <Modal
+          title="Enter Admin Password"
+          open={isConfirmationModalVisible}
+          onCancel={() => setIsConfirmationModalVisible(false)}
+          onOk={() => confirmationForm.submit()}
+          okText="Confirm"
+        >
+          <Form
+            requiredMark={false}
+            form={confirmationForm}
+            onFinish={({ adminPassword }) => {
+              if (adminPassword === "muix@123") {
+                setIsConfirmationModalVisible(false);
+                setIsModalVisible(true);
+                setIsPasswordVerified(true);
+              } else {
+                message.error("Incorrect admin password!");
+              }
+            }}
+            layout="vertical"
+          >
+            <Form.Item
+              name="adminPassword"
+              label="Admin Password"
+              rules={[{ required: true, message: "Please enter the password" }]}
+            >
+              <Input.Password placeholder="Enter admin password" />
             </Form.Item>
           </Form>
         </Modal>
