@@ -7,6 +7,7 @@ import employeeReportRoutes from "./routes/employerecordroute.js";
 import resetPasswordRoutes from "./routes/resetPasswordRoutes.js";
 import dashboardStatsRoutes from "./routes/employecountroute.js";
 import employeeReportsRoutesUPload from "./routes/UploadCSVroute.js";
+import authRoutes from "./routes/authroute.js";
 const app = express();
 dotenv.config();
 
@@ -49,6 +50,7 @@ app.use("/api/employeereports", employeeReportRoutes);
 app.use("/api/resetpassword", resetPasswordRoutes);
 app.use("/api/employrecorcdcount", dashboardStatsRoutes);
 app.use("/api/uploademployeereports", employeeReportsRoutesUPload);
+app.use("/api/auth", authRoutes); // 👈 Add Auth Routes
 
 // Error handling middleware
 app.use((err, req, res, next) => {

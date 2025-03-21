@@ -214,6 +214,28 @@ body {
   color: #ffffff !important; /* keep text white */
   border-bottom: 2px solid #a5d6a7; /* optional underline or accent */
 }
+.login-container {
+  max-width: 500px;
+  margin: 100px auto; /* Centers it vertically and horizontally */
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.login-container h2 {
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.ant-form-item {
+  text-align: left; /* Align labels to left */
+}
+
+.ant-btn {
+  width: 100%;
+}
 
 @media (max-width: 768px) {
   .main-content {
