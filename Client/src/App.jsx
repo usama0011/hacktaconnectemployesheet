@@ -336,7 +336,7 @@ const App = () => {
           className="employee-table"
           dataSource={filteredData}
           columns={columns}
-          pagination={{ pageSize: 5 }}
+          pagination={{ pageSize: 30 }}
         />
 
         {/* Upload Info Popup */}
