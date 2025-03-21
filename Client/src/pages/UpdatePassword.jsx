@@ -192,7 +192,6 @@ const UpdatePassword = () => {
               <Card
                 key={user._id}
                 type="inner"
-                title={`Login ID: ${user._id}`}
                 extra={
                   <Button
                     icon={<EditOutlined />}
