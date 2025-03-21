@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Form, Input, Button, message } from "antd";
+import { Form, Input, Button, message, Layout } from "antd";
 import axios from "axios";
 import "../styles/Login.css"; // Importing the CSS file
 import MainBgLogin from "../assets/logo.png";
+
+const { Footer } = Layout;
 const BASE_URL = "http://hacktaconnectemploye-server.vercel.app/api"; // API URL
 
 const Login = () => {
@@ -39,31 +41,40 @@ const Login = () => {
   };
 
   return (
-    <div className="login-container">
-      <div className="login-box">
-        <img src={MainBgLogin} alt="Brand Logo" className="login-logo" />
-        <h2>Login</h2>
-        <Form requiredMark={false} onFinish={handleLogin} layout="vertical">
-          <Form.Item
-            name="password"
-            label="Enter Password"
-            rules={[{ required: true, message: "Please enter your password" }]}
-          >
-            <Input.Password placeholder="Enter Password" />
-          </Form.Item>
+    <Layout className="login-layout">
+      <div className="login-container">
+        <div className="login-box">
+          <img src={MainBgLogin} alt="Brand Logo" className="login-logo" />
+          <h2>𝐇𝐚𝐜𝐤𝐭𝐚 𝐂𝐨𝐧𝐧𝐞𝐜𝐭 𝐋𝐨𝐠𝐢𝐧</h2>
+          <Form requiredMark={false} onFinish={handleLogin} layout="vertical">
+            <Form.Item
+              name="password"
+              label={<span style={{ color: "white" }}>Enter Password</span>}
+              rules={[
+                { required: true, message: "Please enter your password" },
+              ]}
+            >
+              <Input.Password placeholder="Enter Password" />
+            </Form.Item>
 
-          <Button
-            style={{ backgroundColor: "#37af65", height: "50px" }}
-            type="primary"
-            htmlType="submit"
-            loading={loading}
-            className="login-btn"
-          >
-            Login
-          </Button>
-        </Form>
+            <Button
+              style={{ backgroundColor: "#37af65", height: "45px" }}
+              type="primary"
+              htmlType="submit"
+              loading={loading}
+              className="login-btn"
+            >
+              Login
+            </Button>
+          </Form>
+        </div>
       </div>
-    </div>
+
+      {/* Footer Layout */}
+      <Footer className="login-footer">
+        Developed by <strong style={{ color: "#2e7d32" }}>Muix</strong>
+      </Footer>
+    </Layout>
   );
 };
 
