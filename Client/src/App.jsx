@@ -37,7 +37,7 @@ const { Dragger } = Upload;
 const { Option } = Select;
 
 const App = () => {
-  const BASE_URL = "http://localhost:3001/api";
+  const BASE_URL = "https://hacktaconnectemploye-server.vercel.app/api";
 
   const [isUploadPopupVisible, setUploadPopupVisible] = useState(false);
   const [isPasswordModalVisible, setPasswordModalVisible] = useState(false);

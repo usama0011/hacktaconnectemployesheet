@@ -24,7 +24,11 @@ try {
 
 // Set CORS options to allow the client URL
 const corsOptions = {
-  origin: ["http://localhost:5173", "http://localhost:5174"], // Allow your frontend origin
+  origin: [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "https://hacktaemployerecord.vercel.app",
+  ], // Allow your frontend origin
   methods: "GET,POST,PUT,DELETE,OPTIONS",
   allowedHeaders: "Content-Type,Authorization",
 };
@@ -37,7 +41,7 @@ app.use(cookieParser());
 
 // Define a simple route
 app.get("/", (req, res) => {
-  res.status(200).json("App Work 100% Latest MailChimp");
+  res.status(200).json("App Work 100% Hacta Employe Record");
 });
 
 // Start router from here
