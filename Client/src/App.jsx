@@ -485,24 +485,6 @@ const App = () => {
                 <Option value="WFH Agent">WFH Agent</Option>
               </Select>
             </Form.Item>
-
-            <Form.Item
-              name="picture"
-              label="Upload Image"
-              valuePropName="file"
-              getValueFromEvent={(e) => {
-                if (Array.isArray(e)) return e;
-                return e && e.fileList.length ? e : null;
-              }}
-            >
-              <Upload
-                listType="picture"
-                maxCount={1}
-                beforeUpload={() => false}
-              >
-                <Button icon={<InboxOutlined />}>Click to Upload</Button>
-              </Upload>
-            </Form.Item>
           </Form>
         </Modal>
       </Content>

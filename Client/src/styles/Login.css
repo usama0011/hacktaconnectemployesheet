@@ -27,10 +27,6 @@ h2 {
   margin-bottom: 20px;
 }
 
-.ant-form-item-label > label {
-  color: #fff;
-}
-
 .ant-input {
   background: rgba(255, 255, 255, 0.1);
   border: none;
@@ -44,11 +40,6 @@ h2 {
   background: rgba(255, 255, 255, 0.1);
 }
 
-.ant-input-password input {
-  background: transparent;
-  color: #fff;
-}
-
 .login-btn {
   width: 100%;
   background: #0073aa;
@@ -58,11 +49,6 @@ h2 {
 
 .login-btn:hover {
   background: #005f8c;
-}
-
-/* Login.css */
-.ant-form-item-label label {
-  color: white !important;
 }
 
 /* Login.css */
