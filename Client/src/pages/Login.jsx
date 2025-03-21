@@ -6,7 +6,7 @@ import "../styles/Login.css"; // Importing the CSS file
 import MainBgLogin from "../assets/logo.png";
 
 const { Footer } = Layout;
-const BASE_URL = "http://hacktaconnectemploye-server.vercel.app/api"; // API URL
+const BASE_URL = "https://hacktaconnectemploye-server.vercel.app/api"; // API URL
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
