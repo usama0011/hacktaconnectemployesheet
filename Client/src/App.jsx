@@ -245,8 +245,6 @@ const App = () => {
     if (title.includes("Night")) return <ClockCircleOutlined />;
     if (title.includes("Office")) return <LaptopOutlined />;
     if (title.includes("WFH")) return <HomeOutlined />;
-    if (title.includes("Bahria")) return <BuildOutlined />;
-    if (title.includes("Commercial")) return <CaretRightOutlined />;
     return <TeamOutlined />;
   };
 
