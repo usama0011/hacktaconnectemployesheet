@@ -162,41 +162,9 @@ body {
   margin-bottom: 20px;
 }
 
-.ant-input,
-.ant-input-password,
-.ant-select-selector {
-  border-radius: 8px !important;
-  height: 40px;
-  padding: 0 14px !important;
-  font-size: 14px;
-  border: 1px solid #c8e6c9 !important;
-  transition: all 0.3s ease;
-  box-shadow: none !important;
-  background-color: #ffffff;
-}
-
-.ant-input:hover,
-.ant-input-password:hover,
-.ant-select-selector:hover {
-  border-color: #66bb6a !important;
-}
-
-.ant-input:focus,
-.ant-input-password:focus,
-.ant-select-focused .ant-select-selector {
-  border-color: #2e7d32 !important;
-  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2) !important;
-}
-
-.ant-input::placeholder,
-.ant-input-password input::placeholder {
-  color: #a5d6a7;
-}
-
 .ant-select-selector {
   display: flex;
   align-items: center;
-  background-color: #ffffff !important;
 }
 
 .ant-select-selection-item {
@@ -213,28 +181,6 @@ body {
   background-color: transparent !important;
   color: #ffffff !important; /* keep text white */
   border-bottom: 2px solid #a5d6a7; /* optional underline or accent */
-}
-.login-container {
-  max-width: 500px;
-  margin: 100px auto; /* Centers it vertically and horizontally */
-  padding: 20px;
-  background: #f9f9f9;
-  border-radius: 10px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  text-align: center;
-}
-
-.login-container h2 {
-  margin-bottom: 20px;
-  font-weight: bold;
-}
-
-.ant-form-item {
-  text-align: left; /* Align labels to left */
-}
-
-.ant-btn {
-  width: 100%;
 }
 
 @media (max-width: 768px) {

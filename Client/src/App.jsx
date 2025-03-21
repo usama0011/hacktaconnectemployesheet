@@ -14,6 +14,7 @@ import {
   message,
 } from "antd";
 import axios from "axios";
+import moment from "moment";
 
 import {
   InboxOutlined,
@@ -33,7 +34,7 @@ import {
 } from "@ant-design/icons";
 import MainLogo from "./assets/logo.png";
 import "./App.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 const { Header, Content } = Layout;
 const { Dragger } = Upload;
 const { Option } = Select;
@@ -41,6 +42,7 @@ const { Option } = Select;
 const App = () => {
   const BASE_URL = "https://hacktaconnectemploye-server.vercel.app/api";
   const [cardStats, setCardStats] = useState([]); // 👈 add state for cards
+  const navigate = useNavigate();
 
   const [isUploadPopupVisible, setUploadPopupVisible] = useState(false);
   const [isPasswordModalVisible, setPasswordModalVisible] = useState(false);
@@ -103,12 +105,14 @@ const App = () => {
       ),
       dataIndex: "createdAt",
       key: "createdAt",
+      render: (date) => moment(date).format("MMMM Do YYYY, h:mm:ss a"), // 👈 Format Date
     },
+
     {
       title: (
         <span>
-          <BuildOutlined />
-          Employe Mobile
+          <PhoneOutlined />
+          Created AT
         </span>
       ),
       dataIndex: "createdAt",
@@ -233,6 +237,19 @@ const App = () => {
     return <TeamOutlined />;
   };
 
+  // Check authentication
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login"); // Redirect to login if no token
+    }
+  }, [navigate]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token"); // Remove token
+    message.success("Logged out successfully!");
+    navigate("/login"); // Redirect to login page
+  };
   useEffect(() => {
     fetchEmployees();
     fetchCardStats(); // 👈 fetch card data on load
@@ -267,7 +284,11 @@ const App = () => {
           <Menu.Item key="settings" icon={<SettingOutlined />}>
             <Link to="/settings">Settings</Link>
           </Menu.Item>
-          <Menu.Item key="logout" icon={<Avatar icon={<UserOutlined />} />}>
+          <Menu.Item
+            key="logout"
+            icon={<LogoutOutlined />}
+            onClick={handleLogout}
+          >
             Logout
           </Menu.Item>
         </Menu>

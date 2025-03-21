@@ -1,13 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Form, Input, Button, message } from "antd";
 import axios from "axios";
-
+import "../styles/Login.css"; // Importing the CSS file
+import MainBgLogin from "../assets/logo.png";
 const BASE_URL = "http://hacktaconnectemploye-server.vercel.app/api"; // API URL
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Check if token exists and redirect to dashboard
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/");
+    }
+  }, [navigate]);
 
   const handleLogin = async (values) => {
     setLoading(true);
@@ -31,20 +40,29 @@ const Login = () => {
 
   return (
     <div className="login-container">
-      <h2>Login</h2>
-      <Form onFinish={handleLogin} layout="vertical">
-        <Form.Item
-          name="password"
-          label="Enter Password"
-          rules={[{ required: true, message: "Please enter your password" }]}
-        >
-          <Input.Password placeholder="Enter Password" />
-        </Form.Item>
+      <div className="login-box">
+        <img src={MainBgLogin} alt="Brand Logo" className="login-logo" />
+        <h2>Login</h2>
+        <Form requiredMark={false} onFinish={handleLogin} layout="vertical">
+          <Form.Item
+            name="password"
+            label="Enter Password"
+            rules={[{ required: true, message: "Please enter your password" }]}
+          >
+            <Input.Password placeholder="Enter Password" />
+          </Form.Item>
 
-        <Button type="primary" htmlType="submit" loading={loading}>
-          Login
-        </Button>
-      </Form>
+          <Button
+            style={{ backgroundColor: "#37af65", height: "50px" }}
+            type="primary"
+            htmlType="submit"
+            loading={loading}
+            className="login-btn"
+          >
+            Login
+          </Button>
+        </Form>
+      </div>
     </div>
   );
 };
