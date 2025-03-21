@@ -318,12 +318,18 @@ const App = () => {
               }
               bordered={false}
             >
-              <h2>{card.count}</h2>
+              <p style={{ fontSize: "18px" }}>{card.count}</p>
             </Card>
           ))}
         </div>
 
         <Input.Search
+          style={{
+            border: "1px solid green",
+            borderRadius: "7px",
+            background: "transparent",
+            backgroundColor: "transparent",
+          }}
           placeholder="Filter by CNIC"
           enterButton={<SearchOutlined />}
           className="search-bar"

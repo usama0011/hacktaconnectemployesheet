@@ -67,9 +67,9 @@ body {
   border: none;
   box-shadow: 0 6px 20px rgba(46, 125, 50, 0.2);
   text-align: center;
-  padding: 24px 12px;
   transition: transform 0.2s ease, box-shadow 0.3s ease;
   cursor: pointer;
+  height: 130px;
 }
 
 .summary-card:hover {
@@ -88,6 +88,10 @@ body {
 .search-bar {
   max-width: 360px;
   margin-bottom: 24px;
+}
+/* App.css */
+.custom-placeholder ::placeholder {
+  color: black !important;
 }
 
 /* Table */
