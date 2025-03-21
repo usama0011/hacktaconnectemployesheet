@@ -28,6 +28,8 @@ import {
   IdcardOutlined,
   SearchOutlined,
   SettingOutlined,
+  PhoneOutlined,
+  BuildOutlined,
 } from "@ant-design/icons";
 import MainLogo from "./assets/logo.png";
 import "./App.css";
@@ -35,9 +37,10 @@ import { Link } from "react-router-dom";
 const { Header, Content } = Layout;
 const { Dragger } = Upload;
 const { Option } = Select;
-
+//https://hacktaconnectemploye-server.vercel.app/api
 const App = () => {
   const BASE_URL = "https://hacktaconnectemploye-server.vercel.app/api";
+  const [cardStats, setCardStats] = useState([]); // 👈 add state for cards
 
   const [isUploadPopupVisible, setUploadPopupVisible] = useState(false);
   const [isPasswordModalVisible, setPasswordModalVisible] = useState(false);
@@ -52,28 +55,11 @@ const App = () => {
   const [form] = Form.useForm();
   const [passwordForm] = Form.useForm();
 
-  const dataSource = [
-    {
-      key: "1",
-      name: "Ali Khan",
-      shift: "Morning",
-      designation: "Office Agent",
-      CNIC: "12345-6789012-3",
-    },
-    {
-      key: "2",
-      name: "Sara Malik",
-      shift: "Evening",
-      designation: "WFH Agent",
-      CNIC: "98765-4321098-7",
-    },
-  ];
-
   const columns = [
     {
       title: (
         <span>
-          <IdcardOutlined /> Name
+          <IdcardOutlined /> Employe Name
         </span>
       ),
       dataIndex: "employeename",
@@ -82,7 +68,7 @@ const App = () => {
     {
       title: (
         <span>
-          <ClockCircleOutlined /> Shift
+          <ClockCircleOutlined /> Employe Shift
         </span>
       ),
       dataIndex: "shift",
@@ -91,7 +77,7 @@ const App = () => {
     {
       title: (
         <span>
-          <TeamOutlined /> Designation
+          <TeamOutlined /> Employe Designation
         </span>
       ),
       dataIndex: "designation",
@@ -100,45 +86,38 @@ const App = () => {
     {
       title: (
         <span>
-          <IdcardOutlined /> CNIC
+          <IdcardOutlined />
+          Employe CNIC
         </span>
       ),
       dataIndex: "CNIC",
       key: "CNIC",
     },
+
+    {
+      title: (
+        <span>
+          <PhoneOutlined />
+          Created AT
+        </span>
+      ),
+      dataIndex: "createdAt",
+      key: "createdAt",
+    },
+    {
+      title: (
+        <span>
+          <BuildOutlined />
+          Employe Mobile
+        </span>
+      ),
+      dataIndex: "createdAt",
+      key: "createdAt",
+    },
   ];
   const filteredData = employeeData.filter((item) =>
     item.CNIC.includes(searchCNIC)
   );
-
-  const uploadProps = {
-    customRequest: async ({ file, onSuccess, onError }) => {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      try {
-        const response = await fetch(
-          `${BASE_URL}/employeereports/upload-employee-records`,
-          {
-            method: "POST",
-            body: formData,
-          }
-        );
-        const result = await response.json();
-
-        if (!response.ok) {
-          throw new Error(result.message || "Upload failed");
-        }
-
-        message.success("✅ CSV uploaded successfully!");
-        onSuccess(result);
-      } catch (error) {
-        console.error("CSV Upload Error:", error);
-        message.error(`❌ ${error.message}`);
-        onError(error);
-      }
-    },
-  };
 
   const handleCreate = async (values) => {
     const formData = new FormData();
@@ -192,6 +171,16 @@ const App = () => {
       setLoading(false);
     }
   };
+  const fetchCardStats = async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/employrecorcdcount/summary`);
+      const data = await res.json();
+      setCardStats(data);
+    } catch (err) {
+      console.error("Error loading card stats", err);
+      message.error("Failed to load summary data.");
+    }
+  };
 
   const handlePasswordSubmit = (values) => {
     if (values.password === "hacktaconnect@123") {
@@ -235,9 +224,18 @@ const App = () => {
       setUploading(false);
     }
   };
+  const getCardIcon = (title) => {
+    if (title.includes("Morning")) return <ClockCircleOutlined />;
+    if (title.includes("Evening")) return <ClockCircleOutlined />;
+    if (title.includes("Night")) return <ClockCircleOutlined />;
+    if (title.includes("Office")) return <LaptopOutlined />;
+    if (title.includes("WFH")) return <HomeOutlined />;
+    return <TeamOutlined />;
+  };
 
   useEffect(() => {
     fetchEmployees();
+    fetchCardStats(); // 👈 fetch card data on load
   }, []);
 
   return (
@@ -277,39 +275,13 @@ const App = () => {
 
       <Content className="main-content">
         <div className="card-section">
-          {[
-            {
-              title: "Morning Employees",
-              count: 12,
-              icon: <ClockCircleOutlined />,
-            },
-            {
-              title: "Evening Employees",
-              count: 8,
-              icon: <ClockCircleOutlined />,
-            },
-            {
-              title: "Night Employees",
-              count: 6,
-              icon: <ClockCircleOutlined />,
-            },
-            {
-              title: "Office Agents",
-              count: 10,
-              icon: <LaptopOutlined />,
-            },
-            {
-              title: "WFH Agents",
-              count: 14,
-              icon: <HomeOutlined />,
-            },
-          ].map((card, index) => (
+          {cardStats.map((card, index) => (
             <Card
               key={index}
               className="summary-card"
               title={
                 <span>
-                  {card.icon} {card.title}
+                  {getCardIcon(card.title)} {card.title}
                 </span>
               }
               bordered={false}

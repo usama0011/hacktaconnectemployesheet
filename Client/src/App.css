@@ -208,6 +208,12 @@ body {
 .ant-form-item-label {
   padding-bottom: 4px;
 }
+/* Transparent background for active menu item */
+.custom-menu .ant-menu-item-selected {
+  background-color: transparent !important;
+  color: #ffffff !important; /* keep text white */
+  border-bottom: 2px solid #a5d6a7; /* optional underline or accent */
+}
 
 @media (max-width: 768px) {
   .main-content {

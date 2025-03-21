@@ -47,7 +47,7 @@ app.get("/", (req, res) => {
 // Start router from here
 app.use("/api/employeereports", employeeReportRoutes);
 app.use("/api/resetpassword", resetPasswordRoutes);
-app.use("/api/dashboard", dashboardStatsRoutes);
+app.use("/api/employrecorcdcount", dashboardStatsRoutes);
 app.use("/api/uploademployeereports", employeeReportsRoutesUPload);
 
 // Error handling middleware
