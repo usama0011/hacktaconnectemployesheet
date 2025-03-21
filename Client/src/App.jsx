@@ -31,6 +31,8 @@ import {
   SettingOutlined,
   PhoneOutlined,
   BuildOutlined,
+  ManOutlined,
+  CaretRightOutlined,
 } from "@ant-design/icons";
 import MainLogo from "./assets/logo.png";
 import "./App.css";
@@ -95,28 +97,36 @@ const App = () => {
       dataIndex: "CNIC",
       key: "CNIC",
     },
-
+    {
+      title: (
+        <span>
+          <HomeOutlined />
+          Employe Branch
+        </span>
+      ),
+      dataIndex: "branch",
+      key: "branch",
+    },
     {
       title: (
         <span>
           <PhoneOutlined />
+          Mobile
+        </span>
+      ),
+      dataIndex: "mobileno",
+      key: "mobileno",
+    },
+    {
+      title: (
+        <span>
+          <ManOutlined />
           Created AT
         </span>
       ),
       dataIndex: "createdAt",
       key: "createdAt",
       render: (date) => moment(date).format("MMMM Do YYYY, h:mm:ss a"), // 👈 Format Date
-    },
-
-    {
-      title: (
-        <span>
-          <PhoneOutlined />
-          Created AT
-        </span>
-      ),
-      dataIndex: "createdAt",
-      key: "createdAt",
     },
   ];
   const filteredData = employeeData.filter((item) =>
@@ -130,6 +140,7 @@ const App = () => {
     formData.append("mobileno", values.mobileno);
     formData.append("shift", values.shift);
     formData.append("designation", values.designation);
+    formData.append("branch", values.branch);
 
     if (values.picture && values.picture.file) {
       formData.append("picture", values.picture.file.originFileObj);
@@ -234,6 +245,8 @@ const App = () => {
     if (title.includes("Night")) return <ClockCircleOutlined />;
     if (title.includes("Office")) return <LaptopOutlined />;
     if (title.includes("WFH")) return <HomeOutlined />;
+    if (title.includes("Bahria")) return <BuildOutlined />;
+    if (title.includes("Commercial")) return <CaretRightOutlined />;
     return <TeamOutlined />;
   };
 
@@ -449,6 +462,16 @@ const App = () => {
                 <Option value="Morning">Morning</Option>
                 <Option value="Evening">Evening</Option>
                 <Option value="Night">Night</Option>
+              </Select>
+            </Form.Item>
+            <Form.Item
+              name="branch"
+              label="branch"
+              rules={[{ required: true, message: "Please select branch" }]}
+            >
+              <Select>
+                <Option value="Commercial">Commercial</Option>
+                <Option value="Bahria">Bahria</Option>
               </Select>
             </Form.Item>
 

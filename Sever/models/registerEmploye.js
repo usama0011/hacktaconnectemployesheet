@@ -8,6 +8,7 @@ const employeeReportSchema = new mongoose.Schema(
     designation: { type: String, required: true },
     picture: { type: String }, // Optional field (e.g., image URL or base64 string)
     CNIC: { type: String, required: true },
+    branch: { type: String, required: true },
     mobileno: { type: String, required: true },
   },
   { timestamps: true }

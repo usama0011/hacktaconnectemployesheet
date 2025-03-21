@@ -36,6 +36,7 @@ router.post(
               data.CNIC &&
               data.mobileno &&
               data.shift &&
+              data.branch &&
               data.designation
             ) {
               results.push({
@@ -43,6 +44,7 @@ router.post(
                 CNIC: data.CNIC,
                 mobileno: data.mobileno,
                 shift: data.shift,
+                branch: data.branch,
                 designation: data.designation,
               });
             }
