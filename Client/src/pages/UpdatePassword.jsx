@@ -392,7 +392,7 @@ const UpdatePassword = () => {
             requiredMark={false}
             form={confirmationForm}
             onFinish={({ adminPassword }) => {
-              if (adminPassword === "muix@123") {
+              if (adminPassword === "Muix@123") {
                 setIsConfirmationModalVisible(false);
                 setIsModalVisible(true);
                 setIsPasswordVerified(true);
