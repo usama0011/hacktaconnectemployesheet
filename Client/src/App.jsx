@@ -198,7 +198,7 @@ const App = () => {
   };
 
   const handlePasswordSubmit = (values) => {
-    if (values.password === "hacktaconnect@123") {
+    if (values.password === "muix@123") {
       setPasswordModalVisible(false);
       setUploadModalVisible(true);
     } else {

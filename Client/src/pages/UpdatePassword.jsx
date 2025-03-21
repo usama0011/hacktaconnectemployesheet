@@ -38,21 +38,40 @@ const UpdatePassword = () => {
 
   const [form] = Form.useForm();
 
-  const handleVerifyPassword = (values) => {
-    if (values.currentPassword === "muix@123") {
-      setIsPasswordVerified(true);
-      setIsModalVisible(true);
-      message.success("Password verified");
-    } else {
-      message.error("Incorrect current password");
+  const handleVerifyPassword = async (values) => {
+    try {
+      const response = await axios.post(`${BASE_URL}/login`, {
+        password: values.currentPassword,
+      });
+
+      if (response.data.success) {
+        setIsPasswordVerified(true);
+        setIsModalVisible(true);
+        message.success("Password verified successfully!");
+      } else {
+        message.error("Incorrect current password");
+      }
+    } catch (error) {
+      message.error("Incorrect password, please try again.");
     }
   };
 
-  const handleUpdatePassword = (values) => {
-    console.log("New Password:", values.newPassword);
-    message.success("Password updated successfully!");
-    setIsModalVisible(false);
-    form.resetFields();
+  const handleUpdatePassword = async (values) => {
+    try {
+      const response = await axios.post(`${BASE_URL}/update-password`, {
+        newPassword: values.newPassword,
+      });
+
+      if (response.data.success) {
+        message.success("Password updated successfully! Please log in again.");
+        localStorage.removeItem("token"); // Logout user
+        navigate("/login"); // Redirect to login
+      } else {
+        message.error(response.data.message || "Password update failed");
+      }
+    } catch (error) {
+      message.error("Failed to update password, please try again.");
+    }
   };
 
   const uploadProps = {
@@ -76,6 +95,30 @@ const UpdatePassword = () => {
     form.resetFields();
     setCreateModalVisible(false);
   };
+  useEffect(() => {
+    const checkUserAuthenticated = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          navigate("/login"); // Redirect if not authenticated
+          return;
+        }
+        const response = await axios.get(`${BASE_URL}/user-info`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!response.data.success) {
+          localStorage.removeItem("token");
+          navigate("/login");
+        }
+      } catch (error) {
+        localStorage.removeItem("token");
+        navigate("/login");
+      }
+    };
+
+    checkUserAuthenticated();
+  }, [navigate]);
+
   return (
     <Layout className="main-layout">
       <Header className="custom-header">
