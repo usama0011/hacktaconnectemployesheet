@@ -270,10 +270,12 @@ const App = () => {
   }, [navigate]);
 
   const handleLogout = () => {
-    localStorage.removeItem("token"); // Remove token
+    console.log("Logging out...");
+    localStorage.removeItem("token");
     message.success("Logged out successfully!");
-    navigate("/login"); // Redirect to login page
+    navigate("/login");
   };
+
   useEffect(() => {
     fetchEmployees();
     fetchCardStats(); // 👈 fetch card data on load
