@@ -186,6 +186,37 @@ body {
   color: #ffffff !important; /* keep text white */
   border-bottom: 2px solid #a5d6a7; /* optional underline or accent */
 }
+/* Hide menu icon on desktop */
+.mobile-menu-icon {
+  display: none;
+  font-size: 24px;
+  color: white;
+  cursor: pointer;
+  margin-left: auto;
+}
+/* Custom table header background */
+.employee-table .ant-table-thead > tr > th {
+  background-color: #2e7d32; /* Use your desired color */
+  color: white;
+  font-weight: bold;
+}
+.employee-table .ant-table-thead > tr > th:first-child {
+  border-top-left-radius: 10px;
+}
+.employee-table .ant-table-thead > tr > th:last-child {
+  border-top-right-radius: 10px;
+}
+
+/* Hide horizontal menu on mobile */
+@media (max-width: 768px) {
+  .desktop-menu {
+    display: none;
+  }
+
+  .mobile-menu-icon {
+    display: block;
+  }
+}
 
 @media (max-width: 768px) {
   .main-content {

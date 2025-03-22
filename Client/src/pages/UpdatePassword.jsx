@@ -186,10 +186,11 @@ const UpdatePassword = () => {
       </Header>
 
       <Content className="main-content">
-        <Card title="All Users & Passwords" style={{ marginTop: 24 }}>
+        <Card title="Update Credentials" style={{ marginTop: 24 }}>
           {users.length > 0 ? (
             users.map((user) => (
               <Card
+                title="Current Password ✅"
                 key={user._id}
                 type="inner"
                 extra={

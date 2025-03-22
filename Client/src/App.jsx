@@ -15,6 +15,9 @@ import {
 } from "antd";
 import axios from "axios";
 import moment from "moment";
+import { Skeleton } from "antd";
+import { Drawer } from "antd";
+import { MenuOutlined } from "@ant-design/icons";
 
 import {
   InboxOutlined,
@@ -45,6 +48,7 @@ const App = () => {
   const BASE_URL = "https://hacktaconnectemploye-server.vercel.app/api";
   const [cardStats, setCardStats] = useState([]); // 👈 add state for cards
   const navigate = useNavigate();
+  const [drawerVisible, setDrawerVisible] = useState(false);
 
   const [isUploadPopupVisible, setUploadPopupVisible] = useState(false);
   const [isPasswordModalVisible, setPasswordModalVisible] = useState(false);
@@ -126,7 +130,7 @@ const App = () => {
       ),
       dataIndex: "createdAt",
       key: "createdAt",
-      render: (date) => moment(date).format("MMMM Do YYYY, h:mm:ss a"), // 👈 Format Date
+      render: (date) => moment(date).format("MMMM Do YYYY"), // 👈 Format Date
     },
   ];
   const filteredData = employeeData.filter((item) =>
@@ -134,9 +138,16 @@ const App = () => {
   );
 
   const handleCreate = async (values) => {
+    const cleanedCNIC = values.CNIC.replace(/-/g, "");
+
+    if (!/^\d{13}$/.test(cleanedCNIC)) {
+      message.error("CNIC must be exactly 13 digits without dashes.");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("employeename", values.name);
-    formData.append("CNIC", values.CNIC);
+    formData.append("CNIC", cleanedCNIC); // ✅ sanitized CNIC
     formData.append("mobileno", values.mobileno);
     formData.append("shift", values.shift);
     formData.append("designation", values.designation);
@@ -144,11 +155,6 @@ const App = () => {
 
     if (values.picture && values.picture.file) {
       formData.append("picture", values.picture.file.originFileObj);
-    }
-
-    // Debug log
-    for (let pair of formData.entries()) {
-      console.log(`${pair[0]}: ${pair[1]}`);
     }
 
     try {
@@ -166,11 +172,13 @@ const App = () => {
       message.success("🎉 Employee created successfully!");
       form.resetFields();
       setCreateModalVisible(false);
+      fetchEmployees(); // Refresh list
     } catch (error) {
       console.error(error);
       message.error(`❌ ${error.message}`);
     }
   };
+
   const fetchEmployees = async () => {
     try {
       setLoading(true);
@@ -188,12 +196,15 @@ const App = () => {
   };
   const fetchCardStats = async () => {
     try {
+      setLoading(true); // 👈 add this
       const res = await fetch(`${BASE_URL}/employrecorcdcount/summary`);
       const data = await res.json();
       setCardStats(data);
     } catch (err) {
       console.error("Error loading card stats", err);
       message.error("Failed to load summary data.");
+    } finally {
+      setLoading(false); // 👈 and this
     }
   };
 
@@ -277,7 +288,12 @@ const App = () => {
           />
           <div className="logo">Hackta Connect</div>
         </div>
-        <Menu theme="dark" mode="horizontal" className="custom-menu">
+        {/* Desktop Menu */}
+        <Menu
+          theme="dark"
+          mode="horizontal"
+          className="custom-menu desktop-menu"
+        >
           <Menu.Item
             key="upload"
             icon={<UploadOutlined />}
@@ -303,24 +319,87 @@ const App = () => {
             Logout
           </Menu.Item>
         </Menu>
+
+        {/* Mobile Hamburger Icon */}
+        <MenuOutlined
+          className="mobile-menu-icon"
+          onClick={() => setDrawerVisible(true)}
+        />
+
+        {/* Drawer for Mobile */}
+        <Drawer
+          title="Menu"
+          placement="right"
+          onClose={() => setDrawerVisible(false)}
+          open={drawerVisible}
+        >
+          <Menu mode="vertical">
+            <Menu.Item
+              key="upload"
+              icon={<UploadOutlined />}
+              onClick={() => {
+                setUploadPopupVisible(true);
+                setDrawerVisible(false);
+              }}
+            >
+              Upload Employee List
+            </Menu.Item>
+            <Menu.Item
+              key="create"
+              icon={<PlusCircleOutlined />}
+              onClick={() => {
+                setCreateModalVisible(true);
+                setDrawerVisible(false);
+              }}
+            >
+              Create Employee
+            </Menu.Item>
+            <Menu.Item
+              key="settings"
+              icon={<SettingOutlined />}
+              onClick={() => {
+                setDrawerVisible(false);
+                navigate("/settings");
+              }}
+            >
+              Settings
+            </Menu.Item>
+            <Menu.Item
+              key="logout"
+              icon={<LogoutOutlined />}
+              onClick={() => {
+                handleLogout();
+                setDrawerVisible(false);
+              }}
+            >
+              Logout
+            </Menu.Item>
+          </Menu>
+        </Drawer>
       </Header>
 
       <Content className="main-content">
         <div className="card-section">
-          {cardStats.map((card, index) => (
-            <Card
-              key={index}
-              className="summary-card"
-              title={
-                <span>
-                  {getCardIcon(card.title)} {card.title}
-                </span>
-              }
-              bordered={false}
-            >
-              <p style={{ fontSize: "18px" }}>{card.count}</p>
-            </Card>
-          ))}
+          {loading
+            ? Array.from({ length: 4 }).map((_, index) => (
+                <Card className="summary-card" key={index}>
+                  <Skeleton active paragraph={{ rows: 1 }} />
+                </Card>
+              ))
+            : cardStats.map((card, index) => (
+                <Card
+                  key={index}
+                  className="summary-card"
+                  title={
+                    <span>
+                      {getCardIcon(card.title)} {card.title}
+                    </span>
+                  }
+                  bordered={false}
+                >
+                  <p style={{ fontSize: "18px" }}>{card.count}</p>
+                </Card>
+              ))}
         </div>
 
         <Input.Search
@@ -336,12 +415,18 @@ const App = () => {
           onChange={(e) => setSearchCNIC(e.target.value)}
         />
 
-        <Table
-          className="employee-table"
-          dataSource={filteredData}
-          columns={columns}
-          pagination={{ pageSize: 30 }}
-        />
+        {loading ? (
+          <Card className="employee-table">
+            <Skeleton active paragraph={{ rows: 6 }} />
+          </Card>
+        ) : (
+          <Table
+            className="employee-table"
+            dataSource={filteredData}
+            columns={columns}
+            pagination={{ pageSize: 30 }}
+          />
+        )}
 
         {/* Upload Info Popup */}
         <Modal
@@ -350,18 +435,19 @@ const App = () => {
           onCancel={() => setUploadPopupVisible(false)}
           footer={[
             <Button
-              type="primary"
+              style={{ backgroundColor: "crimson", color: "white" }}
+              type="danger"
               key="next"
               onClick={() => {
                 setUploadPopupVisible(false);
                 setPasswordModalVisible(true);
               }}
             >
-              Continue to Password
+              You can't upload file
             </Button>,
           ]}
         >
-          <p>You are not allowed to upload the list directly. Please verify.</p>
+          <p>Not Available</p>
         </Modal>
 
         {/* Password Modal */}
@@ -443,10 +529,24 @@ const App = () => {
             <Form.Item
               name="CNIC"
               label="CNIC"
-              rules={[{ required: true, message: "Please enter CNIC" }]}
+              rules={[
+                { required: true, message: "Please enter CNIC" },
+                {
+                  pattern: /^[0-9]{13}$/,
+                  message: "CNIC must be 13 digits without dashes",
+                },
+              ]}
             >
-              <Input />
+              <Input
+                maxLength={13}
+                onChange={(e) => {
+                  const noDashes = e.target.value.replace(/-/g, "");
+                  form.setFieldsValue({ CNIC: noDashes });
+                }}
+                placeholder="e.g., 3520112345671"
+              />
             </Form.Item>
+
             <Form.Item
               name="mobileno"
               label="Mobile No"
