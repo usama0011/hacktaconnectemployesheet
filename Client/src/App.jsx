@@ -184,9 +184,11 @@ const App = () => {
       setLoading(true);
       const res = await fetch(`${BASE_URL}/employeereports`);
       const data = await res.json();
-      setEmployeeData(
-        data.map((item, index) => ({ ...item, key: item._id || index }))
-      );
+      const sortedData = data
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // 👈 Sort latest first
+        .map((item, index) => ({ ...item, key: item._id || index }));
+
+      setEmployeeData(sortedData);
     } catch (error) {
       console.error("Error fetching employees:", error);
       message.error("Failed to load employee data.");
