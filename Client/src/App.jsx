@@ -263,7 +263,7 @@ const App = () => {
     if (title.includes("Office"))
       return (
         <img
-          style={{ width: "25px", height: "25px" }}
+          style={{ width: "20px", height: "20px" }}
           src="https://img.icons8.com/?size=50&id=mBUZsi8BBR6a&format=png"
           alt=""
         />
@@ -271,7 +271,7 @@ const App = () => {
     if (title.includes("WFH") || title.includes("WFH"))
       return (
         <img
-          style={{ width: "25px", height: "25px" }}
+          style={{ width: "20px", height: "20px" }}
           src="https://img.icons8.com/?size=24&id=83326&format=png"
           alt=""
         />
@@ -280,7 +280,7 @@ const App = () => {
     if (title.includes("Morning"))
       return (
         <img
-          style={{ width: "25px", height: "25px" }}
+          style={{ width: "20px", height: "20px" }}
           src="https://img.icons8.com/?size=24&id=83326&format=png"
           alt=""
         />
@@ -288,7 +288,7 @@ const App = () => {
     if (title.includes("Evening"))
       return (
         <img
-          style={{ width: "25px", height: "25px" }}
+          style={{ width: "20px", height: "20px" }}
           src="https://img.icons8.com/?size=24&id=83326&format=png"
           alt=""
         />
@@ -296,7 +296,7 @@ const App = () => {
     if (title.includes("Night"))
       return (
         <img
-          style={{ width: "25px", height: "25px" }}
+          style={{ width: "20px", height: "20px" }}
           src="https://img.icons8.com/?size=24&id=83326&format=png"
           alt=""
         />
@@ -465,7 +465,9 @@ const App = () => {
                   }
                   bordered={false}
                 >
-                  <p style={{ fontSize: "14px" }}>{card.count}</p>
+                  <p style={{ fontSize: "16px", fontWeight: "bold" }}>
+                    {card.count}
+                  </p>
                 </Card>
               ))}
         </div>
