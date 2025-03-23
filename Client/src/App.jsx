@@ -264,7 +264,7 @@ const App = () => {
       return (
         <img
           style={{ width: "25px", height: "25px" }}
-          src="https://img.icons8.com/?size=50&id=z7pT3wpix9UG&format=png"
+          src="https://img.icons8.com/?size=50&id=mBUZsi8BBR6a&format=png"
           alt=""
         />
       );
@@ -272,7 +272,7 @@ const App = () => {
       return (
         <img
           style={{ width: "25px", height: "25px" }}
-          src="https://img.icons8.com/?size=48&id=13268&format=png"
+          src="https://img.icons8.com/?size=24&id=83326&format=png"
           alt=""
         />
       );
