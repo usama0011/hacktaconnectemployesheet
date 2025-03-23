@@ -5,20 +5,47 @@ const router = express.Router();
 
 router.get("/summary", async (req, res) => {
   try {
-    const [morning, evening, night, officeAgent, wfhAgent] = await Promise.all([
-      EmployeeReport.countDocuments({ shift: "Morning" }),
-      EmployeeReport.countDocuments({ shift: "Evening" }),
-      EmployeeReport.countDocuments({ shift: "Night" }),
-      EmployeeReport.countDocuments({ designation: "Office Agent" }),
-      EmployeeReport.countDocuments({ designation: "WFH Agent" }),
+    const [
+      morningOffice,
+      morningWFH,
+      eveningOffice,
+      eveningWFH,
+      nightOffice,
+      nightWFH,
+    ] = await Promise.all([
+      EmployeeReport.countDocuments({
+        shift: "Morning",
+        designation: "Office Agent",
+      }),
+      EmployeeReport.countDocuments({
+        shift: "Morning",
+        designation: "WFH Agent",
+      }),
+      EmployeeReport.countDocuments({
+        shift: "Evening",
+        designation: "Office Agent",
+      }),
+      EmployeeReport.countDocuments({
+        shift: "Evening",
+        designation: "WFH Agent",
+      }),
+      EmployeeReport.countDocuments({
+        shift: "Night",
+        designation: "Office Agent",
+      }),
+      EmployeeReport.countDocuments({
+        shift: "Night",
+        designation: "WFH Agent",
+      }),
     ]);
 
     const result = [
-      { title: "Morning Employees", count: morning },
-      { title: "Evening Employees", count: evening },
-      { title: "Night Employees", count: night },
-      { title: "Office Agents", count: officeAgent },
-      { title: "WFH Agents", count: wfhAgent },
+      { title: "Morning Office", count: morningOffice },
+      { title: "Morning Work From Home", count: morningWFH },
+      { title: "Evening Office", count: eveningOffice },
+      { title: "Evening Work From Home", count: eveningWFH },
+      { title: "Night Office", count: nightOffice },
+      { title: "Night Work From Home", count: nightWFH },
     ];
 
     res.json(result);

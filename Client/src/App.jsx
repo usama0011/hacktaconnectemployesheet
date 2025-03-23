@@ -33,9 +33,7 @@ import {
   SearchOutlined,
   SettingOutlined,
   PhoneOutlined,
-  BuildOutlined,
   ManOutlined,
-  CaretRightOutlined,
 } from "@ant-design/icons";
 import MainLogo from "./assets/logo.png";
 import "./App.css";
@@ -253,11 +251,16 @@ const App = () => {
     }
   };
   const getCardIcon = (title) => {
+    if (title.includes("Office")) return <LaptopOutlined />;
+    if (title.includes("Work From Home") || title.includes("WFH"))
+      return <HomeOutlined />;
+
+    // Fallbacks based on shift, if designation isn't present
     if (title.includes("Morning")) return <ClockCircleOutlined />;
     if (title.includes("Evening")) return <ClockCircleOutlined />;
     if (title.includes("Night")) return <ClockCircleOutlined />;
-    if (title.includes("Office")) return <LaptopOutlined />;
-    if (title.includes("WFH")) return <HomeOutlined />;
+
+    // Default fallback
     return <TeamOutlined />;
   };
 
