@@ -41,11 +41,11 @@ router.get("/summary", async (req, res) => {
 
     const result = [
       { title: "Morning Office", count: morningOffice },
-      { title: "Morning Work From Home", count: morningWFH },
+      { title: "Morning WFH", count: morningWFH },
       { title: "Evening Office", count: eveningOffice },
-      { title: "Evening Work From Home", count: eveningWFH },
+      { title: "Evening WFH", count: eveningWFH },
       { title: "Night Office", count: nightOffice },
-      { title: "Night Work From Home", count: nightWFH },
+      { title: "Night WFH", count: nightWFH },
     ];
 
     res.json(result);

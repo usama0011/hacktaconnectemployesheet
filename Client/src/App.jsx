@@ -47,7 +47,10 @@ const App = () => {
   const [cardStats, setCardStats] = useState([]); // 👈 add state for cards
   const navigate = useNavigate();
   const [drawerVisible, setDrawerVisible] = useState(false);
-
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 30,
+  });
   const [isUploadPopupVisible, setUploadPopupVisible] = useState(false);
   const [isPasswordModalVisible, setPasswordModalVisible] = useState(false);
   const [isUploadModalVisible, setUploadModalVisible] = useState(false);
@@ -62,6 +65,12 @@ const App = () => {
   const [passwordForm] = Form.useForm();
 
   const columns = [
+    {
+      title: "No#",
+      key: "index",
+      render: (text, record, index) =>
+        (pagination.current - 1) * pagination.pageSize + index + 1,
+    },
     {
       title: (
         <span>
@@ -251,14 +260,47 @@ const App = () => {
     }
   };
   const getCardIcon = (title) => {
-    if (title.includes("Office")) return <LaptopOutlined />;
-    if (title.includes("Work From Home") || title.includes("WFH"))
-      return <HomeOutlined />;
-
+    if (title.includes("Office"))
+      return (
+        <img
+          style={{ width: "25px", height: "25px" }}
+          src="https://img.icons8.com/?size=50&id=z7pT3wpix9UG&format=png"
+          alt=""
+        />
+      );
+    if (title.includes("WFH") || title.includes("WFH"))
+      return (
+        <img
+          style={{ width: "25px", height: "25px" }}
+          src="https://img.icons8.com/?size=48&id=13268&format=png"
+          alt=""
+        />
+      );
     // Fallbacks based on shift, if designation isn't present
-    if (title.includes("Morning")) return <ClockCircleOutlined />;
-    if (title.includes("Evening")) return <ClockCircleOutlined />;
-    if (title.includes("Night")) return <ClockCircleOutlined />;
+    if (title.includes("Morning"))
+      return (
+        <img
+          style={{ width: "25px", height: "25px" }}
+          src="https://img.icons8.com/?size=24&id=83326&format=png"
+          alt=""
+        />
+      );
+    if (title.includes("Evening"))
+      return (
+        <img
+          style={{ width: "25px", height: "25px" }}
+          src="https://img.icons8.com/?size=24&id=83326&format=png"
+          alt=""
+        />
+      );
+    if (title.includes("Night"))
+      return (
+        <img
+          style={{ width: "25px", height: "25px" }}
+          src="https://img.icons8.com/?size=24&id=83326&format=png"
+          alt=""
+        />
+      );
 
     // Default fallback
     return <TeamOutlined />;
@@ -278,18 +320,26 @@ const App = () => {
     message.success("Logged out successfully!");
     navigate("/login");
   };
+  const handleTableChange = (pagination) => {
+    setPagination({
+      ...pagination,
+    });
+  };
 
   useEffect(() => {
     fetchEmployees();
     fetchCardStats(); // 👈 fetch card data on load
   }, []);
+  useEffect(() => {
+    setPagination({ ...pagination, current: 1 }); // reset to page 1
+  }, [searchCNIC]);
 
   return (
     <Layout className="main-layout">
       <Header className="custom-header">
         <div style={{ display: "flex", alignItems: "center" }}>
           <img
-            style={{ width: "30px", height: "30px", objectFit: "cover" }}
+            style={{ width: "25px", height: "25px", objectFit: "cover" }}
             src={MainLogo}
             alt=""
           />
@@ -398,8 +448,19 @@ const App = () => {
                   key={index}
                   className="summary-card"
                   title={
-                    <span style={{ fontSize: "14px" }}>
-                      {getCardIcon(card.title)} {card.title}
+                    <span
+                      style={{
+                        fontSize: "14px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <span style={{ marginRight: "10px", marginTop: "7px" }}>
+                        {" "}
+                        {getCardIcon(card.title)}
+                      </span>{" "}
+                      <span> {card.title}</span>
                     </span>
                   }
                   bordered={false}
@@ -431,7 +492,13 @@ const App = () => {
             className="employee-table"
             dataSource={filteredData}
             columns={columns}
-            pagination={{ pageSize: 30 }}
+            onChange={handleTableChange} // 👈 this is required
+            pagination={{
+              current: pagination.current,
+              pageSize: pagination.pageSize,
+              showSizeChanger: true,
+              pageSizeOptions: ["30", "50", "100"], // 👈 add options
+            }}
           />
         )}
 
@@ -563,18 +630,18 @@ const App = () => {
             >
               <Input />
             </Form.Item>
-
             <Form.Item
               name="shift"
               label="Shift"
               rules={[{ required: true, message: "Please select shift" }]}
             >
-              <Select>
-                <Option value="Morning">Morning</Option>
-                <Option value="Evening">Evening</Option>
-                <Option value="Night">Night</Option>
+              <Select placeholder="Select a shift">
+                <Option value="Morning">🌅 Morning Shift</Option>
+                <Option value="Evening">🌇 Evening Shift</Option>
+                <Option value="Night">🌙 Night Shift</Option>
               </Select>
             </Form.Item>
+
             <Form.Item
               name="branch"
               label="branch"
@@ -601,9 +668,20 @@ const App = () => {
       </Content>
 
       <Layout.Footer className="custom-footer">
-        <span>
-          <UserOutlined style={{ marginRight: 6 }} />
-          Developed by <strong style={{ color: "#2e7d32" }}>🅼🆄🅸🆇</strong>
+        <span
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <img
+            style={{ width: "25px", height: "25px" }}
+            src="https://img.icons8.com/?size=80&id=6z06wCF5xvcW&format=png"
+            alt=""
+          />
+          Developed by{" "}
+          <strong style={{ color: "green", marginLeft: "5px" }}>Muix</strong>
         </span>
       </Layout.Footer>
     </Layout>
