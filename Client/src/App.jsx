@@ -458,7 +458,6 @@ const App = () => {
                     >
                       <span style={{ marginRight: "10px", marginTop: "7px" }}>
                         {" "}
-                        {getCardIcon(card.title)}
                       </span>{" "}
                       <span> {card.title}</span>
                     </span>
