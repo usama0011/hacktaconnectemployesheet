@@ -395,13 +395,13 @@ const App = () => {
                   key={index}
                   className="summary-card"
                   title={
-                    <span>
+                    <span style={{ fontSize: "14px" }}>
                       {getCardIcon(card.title)} {card.title}
                     </span>
                   }
                   bordered={false}
                 >
-                  <p style={{ fontSize: "18px" }}>{card.count}</p>
+                  <p style={{ fontSize: "14px" }}>{card.count}</p>
                 </Card>
               ))}
         </div>
