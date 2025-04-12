@@ -173,7 +173,13 @@ const App = () => {
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.message || "Failed to create employee");
+        // 🔍 Check for duplicate CNIC message
+        if (result.message?.includes("CNIC")) {
+          message.error("❌ An employee with this CNIC already exists.");
+        } else {
+          throw new Error(result.message || "Failed to create employee");
+        }
+        return;
       }
 
       message.success("🎉 Employee created successfully!");

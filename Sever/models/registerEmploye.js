@@ -7,7 +7,7 @@ const employeeReportSchema = new mongoose.Schema(
     shift: { type: String, required: true },
     designation: { type: String, required: true },
     picture: { type: String }, // Optional field (e.g., image URL or base64 string)
-    CNIC: { type: String, required: true },
+    CNIC: { type: String, required: true, unique: true }, // 🔒 Enforce unique CNIC
     branch: { type: String, required: true },
     mobileno: { type: String, required: true },
   },

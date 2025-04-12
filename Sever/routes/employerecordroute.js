@@ -7,16 +7,25 @@ const upload = multer(); // memory storage
 
 const router = express.Router();
 
-// Create
 router.post("/", upload.none(), async (req, res) => {
   try {
-    const newReport = new EmployeeReport(req.body); // ✅ Now this will work
+    const existingEmployee = await EmployeeReport.findOne({
+      CNIC: req.body.CNIC,
+    });
+    if (existingEmployee) {
+      return res
+        .status(400)
+        .json({ message: "Employee with this CNIC already exists." });
+    }
+
+    const newReport = new EmployeeReport(req.body);
     const saved = await newReport.save();
     res.status(201).json(saved);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 });
+
 // Read All
 router.get("/", async (req, res) => {
   try {
