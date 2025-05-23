@@ -77,3 +77,8 @@ h2 {
   background: rgba(0, 0, 0, 0.8);
   color: white;
 }
+
+/* Boost z-index of AntD messages */
+.ant-message {
+  z-index: 99999 !important;
+}

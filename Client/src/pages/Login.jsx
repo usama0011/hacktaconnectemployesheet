@@ -35,8 +35,22 @@ const Login = () => {
         message.error(response.data.message || "Invalid password");
       }
     } catch (error) {
-      message.error("Login failed! Invalid password.");
+      alert(error.response.data.message)
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        message.error({
+          content: error.response.data.message,
+          duration: 3,
+          style: { marginTop: "70px" },
+        });
+      } else {
+        message.error("Login failed! Please try again.");
+      }
     }
+
     setLoading(false);
   };
 

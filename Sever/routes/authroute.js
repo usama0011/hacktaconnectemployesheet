@@ -2,7 +2,7 @@ import express from "express";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import User from "../models/usermodel.js"; // Import user model (Create this in next step)
-
+import bcrypt from 'bcryptjs'
 dotenv.config();
 const router = express.Router();
 
@@ -49,17 +49,22 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-// Login Route
 router.post("/login", async (req, res) => {
   try {
     const { password } = req.body;
+
     if (!password) {
       return res.status(400).json({ message: "Password is required" });
     }
 
-    const user = await User.findOne(); // Get the user from DB (Assuming only one user)
+    const user = await User.findOne(); // Only one user in DB
+
     if (!user) {
       return res.status(401).json({ message: "No user found. Please sign up" });
+    }
+
+    if (password !== user.password) {
+      return res.status(401).json({ message: "Invalid password" }); // Plain-text check
     }
 
     const token = jwt.sign({ userId: user._id }, "7349u2ijdwiefi", {
@@ -68,7 +73,7 @@ router.post("/login", async (req, res) => {
 
     res.json({ success: true, token });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Server error. Please try again later." });
   }
 });
 
