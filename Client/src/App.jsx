@@ -12,12 +12,15 @@ import {
   Form,
   Select,
   message,
+  Dropdown,
+  Tag,
+  Space,
 } from "antd";
 import axios from "axios";
 import moment from "moment";
 import { Skeleton } from "antd";
 import { Drawer } from "antd";
-import { MenuOutlined } from "@ant-design/icons";
+import { MenuOutlined, MoreOutlined } from "@ant-design/icons";
 
 import {
   InboxOutlined,
@@ -52,9 +55,13 @@ const App = () => {
     pageSize: 30,
   });
   const [isUploadPopupVisible, setUploadPopupVisible] = useState(false);
+  const [tagStatusMap, setTagStatusMap] = useState({});
   const [isPasswordModalVisible, setPasswordModalVisible] = useState(false);
   const [isUploadModalVisible, setUploadModalVisible] = useState(false);
   const [isCreateModalVisible, setCreateModalVisible] = useState(false);
+  const [isStatusModalVisible, setStatusModalVisible] = useState(false);
+  const [pendingStatusUpdate, setPendingStatusUpdate] = useState(null);
+  const [password, setPassword] = useState("");
   const [searchCNIC, setSearchCNIC] = useState("");
   const [employeeData, setEmployeeData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -63,6 +70,11 @@ const App = () => {
 
   const [form] = Form.useForm();
   const [passwordForm] = Form.useForm();
+  const statusColors = {
+    Live: "green",
+    Resigned: "orange", // ✅ Add this!
+    Terminated: "red",
+  };
 
   const columns = [
     {
@@ -80,6 +92,63 @@ const App = () => {
       dataIndex: "employeename",
       key: "employeename",
     },
+    {
+      title: "Status",
+      key: "status",
+      render: (text, record) => {
+        const currentStatus = record.status || "Live";
+
+        return (
+          <Dropdown
+            overlay={
+              <Menu>
+                {["Live", "Resigned", "Terminated"].map((status) => (
+                  <Menu.Item
+                    key={status}
+                    onClick={() => handleStatusChange(record, status)}
+                  >
+                    <Space>
+                      <span
+                        style={{
+                          display: "inline-block",
+                          width: 8,
+                          height: 8,
+                          borderRadius: "50%",
+                          backgroundColor:
+                            status === "Live"
+                              ? "green"
+                              : status === "Resigned"
+                              ? "orange"
+                              : "red",
+                        }}
+                      />
+                      {status}
+                    </Space>
+                  </Menu.Item>
+                ))}
+              </Menu>
+            }
+            trigger={["click"]}
+          >
+            <Space>
+              <Tag
+                color={
+                  currentStatus === "Live"
+                    ? "green"
+                    : currentStatus === "Resigned"
+                    ? "orange"
+                    : "red"
+                }
+              >
+                {currentStatus}
+              </Tag>
+              <MoreOutlined style={{ cursor: "pointer" }} />
+            </Space>
+          </Dropdown>
+        );
+      },
+    },
+
     {
       title: (
         <span>
@@ -140,6 +209,12 @@ const App = () => {
       render: (date) => moment(date).format("MMMM Do YYYY"), // 👈 Format Date
     },
   ];
+  const handleStatusChange = (record, newStatus) => {
+    setPendingStatusUpdate({ id: record._id, status: newStatus });
+    setPassword("");
+    setStatusModalVisible(true);
+  };
+
   const filteredData = employeeData.filter((item) =>
     item.CNIC.includes(searchCNIC)
   );
@@ -265,6 +340,24 @@ const App = () => {
       setUploading(false);
     }
   };
+  const confirmStatusUpdate = async () => {
+    if (password !== "Hackta@@$tatus") {
+      message.error("Incorrect password");
+      return;
+    }
+
+    try {
+      await axios.put(`${BASE_URL}/employeereports/${pendingStatusUpdate.id}`, {
+        status: pendingStatusUpdate.status,
+      });
+      message.success("Status updated successfully");
+      setStatusModalVisible(false);
+      fetchEmployees(); // Refresh data
+    } catch (error) {
+      message.error("Failed to update status");
+    }
+  };
+
   const getCardIcon = (title) => {
     if (title.includes("Office"))
       return (
@@ -339,6 +432,30 @@ const App = () => {
   useEffect(() => {
     setPagination({ ...pagination, current: 1 }); // reset to page 1
   }, [searchCNIC]);
+  const renderTagMenu = (record) => (
+    <Menu
+      onClick={({ key }) => {
+        setTagStatusMap((prev) => ({ ...prev, [record._id]: key }));
+      }}
+      items={["Live", "Resigned", "Terminated"].map((status) => ({
+        key: status,
+        label: (
+          <Space>
+            <span
+              style={{
+                display: "inline-block",
+                width: 8,
+                height: 8,
+                borderRadius: "50%",
+                backgroundColor: statusColors[status],
+              }}
+            />
+            {status}
+          </Space>
+        ),
+      }))}
+    />
+  );
 
   return (
     <Layout className="main-layout">
@@ -671,6 +788,18 @@ const App = () => {
               </Select>
             </Form.Item>
           </Form>
+        </Modal>
+        <Modal
+          title="Enter Password to Update Status"
+          open={isStatusModalVisible}
+          onOk={confirmStatusUpdate}
+          onCancel={() => setStatusModalVisible(false)}
+        >
+          <Input.Password
+            placeholder="Enter password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
         </Modal>
       </Content>
 

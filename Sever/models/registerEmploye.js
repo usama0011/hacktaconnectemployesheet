@@ -10,6 +10,11 @@ const employeeReportSchema = new mongoose.Schema(
     CNIC: { type: String, required: true, unique: true }, // 🔒 Enforce unique CNIC
     branch: { type: String, required: true },
     mobileno: { type: String, required: true },
+    status: {
+      type: String,
+      enum: ["Live", "Resigned", "Terminated"],
+      default: "Live",
+    }, // ✅ new field
   },
   { timestamps: true }
 );
