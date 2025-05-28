@@ -29,18 +29,32 @@ router.post("/", upload.none(), async (req, res) => {
 // Read All
 router.get("/", async (req, res) => {
   try {
-         const { name, cnic, status } = req.query;
+    const { name, cnic, status, shift, branch, designation } = req.query;
 
     const query = {};
 
     if (name) {
       query.employeename = { $regex: new RegExp(name, "i") }; // case-insensitive match
     }
+
     if (cnic) {
       query.CNIC = { $regex: new RegExp(cnic) }; // partial match
     }
+
     if (status) {
       query.status = status;
+    }
+
+    if (shift) {
+      query.shift = shift;
+    }
+
+    if (branch) {
+      query.branch = branch;
+    }
+
+    if (designation) {
+      query.designation = designation;
     }
 
     const reports = await EmployeeReport.find(query);
@@ -49,6 +63,7 @@ router.get("/", async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+
 
 // Read One
 router.get("/:id", async (req, res) => {

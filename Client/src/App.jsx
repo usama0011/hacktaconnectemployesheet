@@ -66,6 +66,13 @@ const App = () => {
   const [inputCNIC, setInputCNIC] = useState("");
   const [inputName, setInputName] = useState("");
   const [inputStatus, setInputStatus] = useState("");
+  const [inputShift, setInputShift] = useState("");
+  const [inputBranch, setInputBranch] = useState("");
+  const [inputDesignation, setInputDesignation] = useState("");
+
+  const [filterShift, setFilterShift] = useState("");
+  const [filterBranch, setFilterBranch] = useState("");
+  const [filterDesignation, setFilterDesignation] = useState("");
 
   const [password, setPassword] = useState("");
   const [searchCNIC, setSearchCNIC] = useState("");
@@ -228,6 +235,9 @@ const App = () => {
     setSearchCNIC(inputCNIC);
     setSearchName(inputName);
     setFilterStatus(inputStatus);
+    setFilterShift(inputShift);
+    setFilterBranch(inputBranch);
+    setFilterDesignation(inputDesignation);
   };
 
   const handleCreate = async (values) => {
@@ -286,6 +296,9 @@ const App = () => {
           name: searchName,
           cnic: searchCNIC,
           status: filterStatus,
+          shift: filterShift,
+          branch: filterBranch,
+          designation: filterDesignation,
         },
       });
       const data = res.data;
@@ -624,19 +637,21 @@ const App = () => {
             marginBottom: 20,
           }}
         >
-          <Input style={{width:"230px"}}
+          <Input
+            style={{ width: "230px" }}
             placeholder="Search by CNIC"
             value={inputCNIC}
             onChange={(e) => setInputCNIC(e.target.value)}
             allowClear
           />
-          <Input style={{width:"230px"}}
+          <Input
+            style={{ width: "230px" }}
             placeholder="Search by Name"
             value={inputName}
             onChange={(e) => setInputName(e.target.value)}
             allowClear
           />
-          <Select 
+          <Select
             placeholder="Choose Status"
             style={{ minWidth: 230 }}
             value={inputStatus}
@@ -650,18 +665,68 @@ const App = () => {
             <Option value="Resigned">Resigned</Option>
             <Option value="Terminated">Terminated</Option>
           </Select>
+          <Select
+            placeholder="Choose Shift"
+            style={{ minWidth: 180 }}
+            value={inputShift}
+            onChange={(value) => setInputShift(value)}
+            allowClear
+          >
+            <Option value="" disabled>
+              Choose Shift
+            </Option>
+            <Option value="Morning">Morning</Option>
+            <Option value="Evening">Evening</Option>
+            <Option value="Night">Night</Option>
+          </Select>
+
+          <Select
+            placeholder="Choose Branch"
+            style={{ minWidth: 180 }}
+            value={inputBranch}
+            onChange={(value) => setInputBranch(value)}
+            allowClear
+          >
+            <Option value="" disabled>
+              Choose Branch
+            </Option>
+            <Option value="Commercial">Commercial</Option>
+            <Option value="Bahria">Bahria</Option>
+          </Select>
+
+          <Select
+            placeholder="Choose Designation"
+            style={{ minWidth: 200 }}
+            value={inputDesignation}
+            onChange={(value) => setInputDesignation(value)}
+            allowClear
+          >
+            <Option value="" disabled>
+              Choose Agent Type
+            </Option>
+            <Option value="Office Agent">Office Agent</Option>
+            <Option value="WFH Agent">WFH Agent</Option>
+          </Select>
 
           <Button type="primary" onClick={applyFilters}>
             Apply Filters
           </Button>
-          <Button type="dashed"
+          <Button
+            type="dashed"
             onClick={() => {
               setInputCNIC("");
               setInputName("");
               setInputStatus("");
+              setInputShift("");
+              setInputBranch("");
+              setInputDesignation("");
+
               setSearchCNIC("");
               setSearchName("");
               setFilterStatus("");
+              setFilterShift("");
+              setFilterBranch("");
+              setFilterDesignation("");
             }}
           >
             Reset Filters
