@@ -456,7 +456,15 @@ const App = () => {
   useEffect(() => {
     fetchEmployees();
     fetchCardStats(); // 👈 fetch card data on load
-  }, [searchCNIC, searchName, filterStatus]);
+  }, [
+    searchCNIC,
+    searchName,
+    filterStatus,
+    filterShift,
+    filterBranch,
+    filterDesignation,
+  ]);
+
   useEffect(() => {
     setPagination((prev) => ({ ...prev, current: 1 }));
   }, [searchCNIC, searchName, filterStatus]);
@@ -623,8 +631,7 @@ const App = () => {
               ))}
         </div> */}
         <h3 style={{ marginBottom: 10 }}>
-          Showing <span style={{ color: "#237804" }}>{filteredCount}</span>{" "}
-          filtered employees
+          Agents <span style={{ color: "#237804" }}>{filteredCount}</span>{" "}
         </h3>
         <div
           className="filters-wrapper"
