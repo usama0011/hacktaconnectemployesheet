@@ -29,7 +29,21 @@ router.post("/", upload.none(), async (req, res) => {
 // Read All
 router.get("/", async (req, res) => {
   try {
-    const reports = await EmployeeReport.find();
+         const { name, cnic, status } = req.query;
+
+    const query = {};
+
+    if (name) {
+      query.employeename = { $regex: new RegExp(name, "i") }; // case-insensitive match
+    }
+    if (cnic) {
+      query.CNIC = { $regex: new RegExp(cnic) }; // partial match
+    }
+    if (status) {
+      query.status = status;
+    }
+
+    const reports = await EmployeeReport.find(query);
     res.json(reports);
   } catch (err) {
     res.status(500).json({ message: err.message });

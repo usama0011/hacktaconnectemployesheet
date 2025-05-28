@@ -46,7 +46,7 @@ const { Dragger } = Upload;
 const { Option } = Select;
 //https://hacktaconnectemploye-server.vercel.app/api
 const App = () => {
-  const BASE_URL = "https://hacktaconnectemploye-server.vercel.app/api";
+  const BASE_URL = "http://localhost:3001/api";
   const [cardStats, setCardStats] = useState([]); // 👈 add state for cards
   const navigate = useNavigate();
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -56,11 +56,17 @@ const App = () => {
   });
   const [isUploadPopupVisible, setUploadPopupVisible] = useState(false);
   const [tagStatusMap, setTagStatusMap] = useState({});
+  const [searchName, setSearchName] = useState("");
+  const [filterStatus, setFilterStatus] = useState("");
   const [isPasswordModalVisible, setPasswordModalVisible] = useState(false);
   const [isUploadModalVisible, setUploadModalVisible] = useState(false);
   const [isCreateModalVisible, setCreateModalVisible] = useState(false);
   const [isStatusModalVisible, setStatusModalVisible] = useState(false);
   const [pendingStatusUpdate, setPendingStatusUpdate] = useState(null);
+  const [inputCNIC, setInputCNIC] = useState("");
+  const [inputName, setInputName] = useState("");
+  const [inputStatus, setInputStatus] = useState("");
+
   const [password, setPassword] = useState("");
   const [searchCNIC, setSearchCNIC] = useState("");
   const [employeeData, setEmployeeData] = useState([]);
@@ -218,6 +224,11 @@ const App = () => {
   const filteredData = employeeData.filter((item) =>
     item.CNIC.includes(searchCNIC)
   );
+  const applyFilters = () => {
+    setSearchCNIC(inputCNIC);
+    setSearchName(inputName);
+    setFilterStatus(inputStatus);
+  };
 
   const handleCreate = async (values) => {
     const cleanedCNIC = values.CNIC.replace(/-/g, "");
@@ -270,10 +281,17 @@ const App = () => {
   const fetchEmployees = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`${BASE_URL}/employeereports`);
-      const data = await res.json();
+      const res = await axios.get(`${BASE_URL}/employeereports`, {
+        params: {
+          name: searchName,
+          cnic: searchCNIC,
+          status: filterStatus,
+        },
+      });
+      const data = res.data;
+
       const sortedData = data
-        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // 👈 Sort latest first
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
         .map((item, index) => ({ ...item, key: item._id || index }));
 
       setEmployeeData(sortedData);
@@ -284,6 +302,7 @@ const App = () => {
       setLoading(false);
     }
   };
+
   const fetchCardStats = async () => {
     try {
       setLoading(true); // 👈 add this
@@ -428,10 +447,11 @@ const App = () => {
   useEffect(() => {
     fetchEmployees();
     fetchCardStats(); // 👈 fetch card data on load
-  }, []);
+  }, [searchCNIC, searchName, filterStatus]);
   useEffect(() => {
-    setPagination({ ...pagination, current: 1 }); // reset to page 1
-  }, [searchCNIC]);
+    setPagination((prev) => ({ ...prev, current: 1 }));
+  }, [searchCNIC, searchName, filterStatus]);
+
   const renderTagMenu = (record) => (
     <Menu
       onClick={({ key }) => {
@@ -594,18 +614,58 @@ const App = () => {
               ))}
         </div>
 
-        <Input.Search
+        <div
+          className="filters-wrapper"
           style={{
-            border: "1px solid green",
-            borderRadius: "7px",
-            background: "transparent",
-            backgroundColor: "transparent",
+            display: "flex",
+            gap: "12px",
+            marginBottom: 20,
+            flexWrap: "wrap",
           }}
-          placeholder="Filter by CNIC"
-          enterButton={<SearchOutlined />}
-          className="search-bar"
-          onChange={(e) => setSearchCNIC(e.target.value)}
-        />
+        >
+          <Input
+            placeholder="Search by CNIC"
+            value={inputCNIC}
+            onChange={(e) => setInputCNIC(e.target.value)}
+            allowClear
+          />
+          <Input
+            placeholder="Search by Name"
+            value={inputName}
+            onChange={(e) => setInputName(e.target.value)}
+            allowClear
+          />
+          <Select
+            placeholder="Choose Status"
+            style={{ minWidth: 180 }}
+            value={inputStatus}
+            onChange={(value) => setInputStatus(value)}
+            allowClear
+          >
+            <Option value="" disabled>
+              Choose Status
+            </Option>
+            <Option value="Live">Live</Option>
+            <Option value="Resigned">Resigned</Option>
+            <Option value="Terminated">Terminated</Option>
+          </Select>
+
+          <Button type="primary" onClick={applyFilters}>
+            Apply Filters
+          </Button>
+          <Button
+            onClick={() => {
+              setInputCNIC("");
+              setInputName("");
+              setInputStatus("");
+              setSearchCNIC("");
+              setSearchName("");
+              setFilterStatus("");
+            }}
+          >
+            Reset Filters
+          </Button>
+        </div>
 
         {loading ? (
           <Card className="employee-table">
@@ -614,7 +674,7 @@ const App = () => {
         ) : (
           <Table
             className="employee-table"
-            dataSource={filteredData}
+            dataSource={employeeData} // <--- use this directly
             columns={columns}
             onChange={handleTableChange} // 👈 this is required
             pagination={{
