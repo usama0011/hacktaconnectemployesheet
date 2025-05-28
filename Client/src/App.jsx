@@ -46,7 +46,7 @@ const { Dragger } = Upload;
 const { Option } = Select;
 //https://hacktaconnectemploye-server.vercel.app/api
 const App = () => {
-  const BASE_URL = "http://localhost:3001/api";
+  const BASE_URL = "https://hacktaconnectemploye-server.vercel.app/api";
   const [cardStats, setCardStats] = useState([]); // 👈 add state for cards
   const navigate = useNavigate();
   const [drawerVisible, setDrawerVisible] = useState(false);
