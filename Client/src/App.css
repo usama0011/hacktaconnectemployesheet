@@ -228,13 +228,17 @@ body {
 }
 
 .filters-wrapper .ant-btn-primary {
-  background-color: #237804;
-  border-color: #237804;
+  background-color: #237804 !important;
+  border-color: #237804 !important;
 }
 
 .filters-wrapper .ant-btn-primary:hover {
-  background-color: #52c41a;
-  border-color: #52c41a;
+  background-color: #43a047 !important;
+  border-color: #43a047 !important;
+}
+.filters-wrapper .ant-btn-dashed:hover {
+  border-color: #43a047 !important;
+  color: #1a3d2c !important;
 }
 
 

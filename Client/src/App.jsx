@@ -654,7 +654,7 @@ const App = () => {
           <Button type="primary" onClick={applyFilters}>
             Apply Filters
           </Button>
-          <Button
+          <Button type="dashed"
             onClick={() => {
               setInputCNIC("");
               setInputName("");
