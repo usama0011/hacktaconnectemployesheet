@@ -618,26 +618,27 @@ const App = () => {
           className="filters-wrapper"
           style={{
             display: "flex",
+            flexWrap: "wrap",
+            alignItems: "center",
             gap: "12px",
             marginBottom: 20,
-            flexWrap: "wrap",
           }}
         >
-          <Input
+          <Input style={{width:"230px"}}
             placeholder="Search by CNIC"
             value={inputCNIC}
             onChange={(e) => setInputCNIC(e.target.value)}
             allowClear
           />
-          <Input
+          <Input style={{width:"230px"}}
             placeholder="Search by Name"
             value={inputName}
             onChange={(e) => setInputName(e.target.value)}
             allowClear
           />
-          <Select
+          <Select 
             placeholder="Choose Status"
-            style={{ minWidth: 180 }}
+            style={{ minWidth: 230 }}
             value={inputStatus}
             onChange={(value) => setInputStatus(value)}
             allowClear

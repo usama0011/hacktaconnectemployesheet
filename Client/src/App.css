@@ -206,6 +206,37 @@ body {
 .employee-table .ant-table-thead > tr > th:last-child {
   border-top-right-radius: 10px;
 }
+.filters-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.filters-wrapper input.ant-input {
+  width: 220px !important;  /* ✅ fixed width */
+}
+
+.filters-wrapper .ant-select {
+  width: 180px !important;  /* ✅ fixed width */
+}
+
+.filters-wrapper .ant-btn {
+  height: 33px;
+  padding: 0 20px;
+}
+
+.filters-wrapper .ant-btn-primary {
+  background-color: #237804;
+  border-color: #237804;
+}
+
+.filters-wrapper .ant-btn-primary:hover {
+  background-color: #52c41a;
+  border-color: #52c41a;
+}
+
 
 /* Hide horizontal menu on mobile */
 @media (max-width: 768px) {
