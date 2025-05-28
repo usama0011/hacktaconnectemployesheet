@@ -56,6 +56,7 @@ const App = () => {
   });
   const [isUploadPopupVisible, setUploadPopupVisible] = useState(false);
   const [tagStatusMap, setTagStatusMap] = useState({});
+  const [filteredCount, setFilteredCount] = useState(0);
   const [searchName, setSearchName] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
   const [isPasswordModalVisible, setPasswordModalVisible] = useState(false);
@@ -90,12 +91,6 @@ const App = () => {
   };
 
   const columns = [
-    {
-      title: "No#",
-      key: "index",
-      render: (text, record, index) =>
-        (pagination.current - 1) * pagination.pageSize + index + 1,
-    },
     {
       title: (
         <span>
@@ -308,6 +303,7 @@ const App = () => {
         .map((item, index) => ({ ...item, key: item._id || index }));
 
       setEmployeeData(sortedData);
+      setFilteredCount(sortedData.length);
     } catch (error) {
       console.error("Error fetching employees:", error);
       message.error("Failed to load employee data.");
@@ -592,7 +588,7 @@ const App = () => {
       </Header>
 
       <Content className="main-content">
-        <div className="card-section">
+        {/* <div className="card-section">
           {loading
             ? Array.from({ length: 4 }).map((_, index) => (
                 <Card className="summary-card" key={index}>
@@ -625,8 +621,11 @@ const App = () => {
                   </p>
                 </Card>
               ))}
-        </div>
-
+        </div> */}
+        <h3 style={{ marginBottom: 10 }}>
+          Showing <span style={{ color: "#237804" }}>{filteredCount}</span>{" "}
+          filtered employees
+        </h3>
         <div
           className="filters-wrapper"
           style={{
