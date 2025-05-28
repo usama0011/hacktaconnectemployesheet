@@ -630,9 +630,9 @@ const App = () => {
                 </Card>
               ))}
         </div> */}
-        <h3 style={{ marginBottom: 10 }}>
+        <h2 style={{ marginBottom: 10,color:'black' }}>
           Agents <span style={{ color: "#237804" }}>{filteredCount}</span>{" "}
-        </h3>
+        </h2>
         <div
           className="filters-wrapper"
           style={{
