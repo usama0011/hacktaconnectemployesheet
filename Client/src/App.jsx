@@ -94,7 +94,7 @@ const App = () => {
     {
       title: (
         <span>
-          <IdcardOutlined /> Employe Name
+          <IdcardOutlined /> Employee Name
         </span>
       ),
       dataIndex: "employeename",
@@ -160,7 +160,7 @@ const App = () => {
     {
       title: (
         <span>
-          <ClockCircleOutlined /> Employe Shift
+          <ClockCircleOutlined /> Employee Shift
         </span>
       ),
       dataIndex: "shift",
@@ -169,7 +169,7 @@ const App = () => {
     {
       title: (
         <span>
-          <TeamOutlined /> Employe Designation
+          <TeamOutlined /> Employee Designation
         </span>
       ),
       dataIndex: "designation",
@@ -179,7 +179,7 @@ const App = () => {
       title: (
         <span>
           <IdcardOutlined />
-          Employe CNIC
+          Employee CNIC
         </span>
       ),
       dataIndex: "CNIC",
@@ -189,7 +189,7 @@ const App = () => {
       title: (
         <span>
           <HomeOutlined />
-          Employe Branch
+          Employee Branch
         </span>
       ),
       dataIndex: "branch",
