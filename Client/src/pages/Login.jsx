@@ -11,14 +11,11 @@ const BASE_URL = "https://hacktaconnectemploye-server.vercel.app/api"; // API UR
 const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+useEffect(() => {
+  // Always clear token on login page load
+  localStorage.removeItem("token");
+}, []);
 
-  useEffect(() => {
-    // Check if token exists and redirect to dashboard
-    const token = localStorage.getItem("token");
-    if (token) {
-      navigate("/");
-    }
-  }, [navigate]);
 
   const handleLogin = async (values) => {
     setLoading(true);

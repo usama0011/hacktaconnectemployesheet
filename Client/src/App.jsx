@@ -445,7 +445,7 @@ const App = () => {
     console.log("Logging out...");
     localStorage.removeItem("token");
     message.success("Logged out successfully!");
-    navigate("/login");
+    window.location.href = "/login"; // Full reload ensures logout effect
   };
   const handleTableChange = (pagination) => {
     setPagination({
