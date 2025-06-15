@@ -29,6 +29,7 @@ const corsOptions = {
     "http://localhost:5173",
     "http://localhost:5174",
     "https://hacktaemployerecord.vercel.app",
+    "https://employeerecord.hacktaconnect.com"
   ], // Allow your frontend origin
   methods: "GET,POST,PUT,DELETE,OPTIONS",
   allowedHeaders: "Content-Type,Authorization",
